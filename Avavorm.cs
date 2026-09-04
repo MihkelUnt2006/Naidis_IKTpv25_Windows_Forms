@@ -10,13 +10,18 @@ using System.Windows.Forms;
 
 namespace Naidis_IKTpv25_Windows_Forms
 {
-    
+
     public partial class Avavorm : Form
     {
         TreeView tree;
         Button nupp;
         Label silt;
         PictureBox pilt;
+        CheckBox mruut1, mruut2;
+        RadioButton rnupp1, rnupp2;
+        TextBox tbox;
+        TabControl tabs;
+        TabPage tab1, tab2, tab3;
         public Avavorm()
         {
             Height = 600;
@@ -29,11 +34,15 @@ namespace Naidis_IKTpv25_Windows_Forms
             tn.Nodes.Add(new TreeNode("Nupp"));
             tn.Nodes.Add(new TreeNode("Silt"));
             tn.Nodes.Add(new TreeNode("Pilt"));
+            tn.Nodes.Add(new TreeNode("Märkeruut"));
+            tn.Nodes.Add(new TreeNode("Radionupp"));
+            tn.Nodes.Add(new TreeNode("Tekstiväli"));
+            tn.Nodes.Add(new TreeNode("Vahekaardid"));
             tree.Nodes.Add(tn);
 
             //nupp,silt ja pilt
             nupp = new Button();
-            nupp.Text = "Vajuta Siia"; 
+            nupp.Text = "Vajuta Siia";
             nupp.Location = new Point(300, 100);
             nupp.Height = 50;
             nupp.Width = 100;
@@ -41,7 +50,7 @@ namespace Naidis_IKTpv25_Windows_Forms
 
             silt = new Label();
             silt.Text = "See on silt";
-            silt.Location = new Point(300,200);
+            silt.Location = new Point(300, 200);
             silt.Size = new Size(200, 30);
             silt.Font = new Font("Arial", 16, FontStyle.Bold);
             silt.AutoSize = true;
@@ -68,7 +77,7 @@ namespace Naidis_IKTpv25_Windows_Forms
 
             else
                 pilt.Size = suur;
-            
+
         }
 
         private void Silt_MouseHover(object sender, EventArgs e)
@@ -80,7 +89,7 @@ namespace Naidis_IKTpv25_Windows_Forms
         private void Silt_MouseLeave(object sender, EventArgs e)
         {
             silt.BackColor = Color.Black;
-            
+
         }
 
         private void Tree_AfterSelect(object sender, TreeViewEventArgs e)
@@ -99,6 +108,123 @@ namespace Naidis_IKTpv25_Windows_Forms
             {
                 Controls.Add(pilt);
                 tree.SelectedNode = null;
+            }
+            else if (e.Node.Text == "Märkeruut")
+            {
+                mruut1 = new CheckBox();
+                mruut1.Text = "Märkeruut 1";
+                mruut1.Location = new Point(200, 300);
+                mruut1.CheckedChanged += Mruut1_CheckedChanged;
+                mruut2 = new CheckBox();
+                mruut2.Text = "Märkeruut 2";
+                mruut2.Location = new Point(300, 350);
+                mruut2.CheckedChanged += Mruut2_CheckedChanged;
+                Controls.Add(mruut1);
+                Controls.Add(mruut2);
+                tree.SelectedNode = null;
+            }
+            else if (e.Node.Text == "Radionupp")
+            {
+                rnupp1 = new RadioButton();
+                rnupp1.Text = "Bisque";
+                rnupp1.Location = new Point(200, 400);
+                rnupp1.CheckedChanged += Rnupp1_CheckedChanged;
+                rnupp2 = new RadioButton();
+                rnupp2.Text = "Hall";
+                rnupp2.Location = new Point(200, 450);
+                rnupp2.CheckedChanged += Rnupp1_CheckedChanged;
+                Controls.Add(rnupp1);
+                Controls.Add(rnupp2);
+                tree.SelectedNode = null;
+            }
+            else if (e.Node.Text == "Tekstiväli")
+            {
+                tbox = new TextBox();
+                tbox.Location = new Point(200, 500);
+                tbox.Width = 200;
+                tbox.TextChanged += (s, arg) =>
+                {
+                    Controls.Add(silt);
+                    if (tbox.Text.Length > 0)
+                    {
+                        silt.Text = tbox.Text;
+                    }
+                    if (tbox.Text.Length == 0)
+                    {
+                        silt.Text = " See on silt";
+                    }
+                };
+                Controls.Add(tbox);
+                tree.SelectedNode = null;
+            }
+            else if (e.Node.Text == "Vahekaardid")
+            {
+                tabs = new TabControl();
+                tabs.Location = new Point(500, 100);
+                tabs.Size = new Size(400, 300);
+                tab1 = new TabPage("Techno+TLN");
+                WebBrowser brauser = new WebBrowser();
+                brauser.Dock = DockStyle.Fill;
+                brauser.ScriptErrorsSuppressed = true;
+                brauser.Url = new Uri("https://techno.ee/");
+                tab1.Controls.Add(brauser);
+
+                tab2 = new TabPage("ChatikGPs");
+                WebBrowser browser = new WebBrowser();
+                browser.Dock = DockStyle.Fill;
+                browser.ScriptErrorsSuppressed = true;
+                browser.Url = new Uri("https://chatgpt.com/");
+                tab2.Controls.Add(browser);
+                tab3 = new TabPage("Vahekaart3");
+                tabs.TabPages.Add(tab1);
+                tabs.TabPages.Add(tab2);
+                tabs.TabPages.Add(tab3);
+                Controls.Add(tabs);
+                tree.SelectedNode = null;
+            }
+        }
+
+        private void Rnupp1_CheckedChanged(object sender, EventArgs e)
+        {
+            RadioButton nupp = sender as RadioButton;
+            if (nupp == rnupp1 && nupp.Checked)
+            {
+                BackColor = Color.Bisque;
+            }
+            else if (nupp == rnupp2 && nupp.Checked)
+            {
+                BackColor = Color.Gray;
+            }
+        }
+
+        private void Mruut2_CheckedChanged(object sender, EventArgs e)
+        {
+            Controls.Add(pilt);
+            if (mruut2.Checked)
+            {
+                pilt.Visible = true;
+                mruut1.Text = "Peida pilt";
+
+            }
+            else
+            {
+                pilt.Visible = false;
+                mruut1.Text = "Näita pilt";
+            }
+        }
+
+        private void Mruut1_CheckedChanged(object sender, EventArgs e)
+        {
+            if (mruut1.Checked)
+            {
+                Size = new Size(500, 300);
+                mruut1.Text = "Tee suuremaks";
+
+            }
+            else
+            {
+                Size = new Size(1000, 600);
+                mruut1.Text = "Tee väiksemaks";
             }
         }
     }
