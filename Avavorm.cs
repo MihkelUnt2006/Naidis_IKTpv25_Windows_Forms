@@ -7,6 +7,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Forms;
+using Microsoft.VisualBasic;
 
 namespace Naidis_IKTpv25_Windows_Forms
 {
@@ -161,7 +162,7 @@ namespace Naidis_IKTpv25_Windows_Forms
             {
                 tabs = new TabControl();
                 tabs.Location = new Point(500, 100);
-                tabs.Size = new Size(400, 300);
+                tabs.Size = new Size(1000, 500);
                 tab1 = new TabPage("Techno+TLN");
                 WebBrowser brauser = new WebBrowser();
                 brauser.Dock = DockStyle.Fill;
@@ -175,12 +176,58 @@ namespace Naidis_IKTpv25_Windows_Forms
                 browser.ScriptErrorsSuppressed = true;
                 browser.Url = new Uri("https://chatgpt.com/");
                 tab2.Controls.Add(browser);
-                tab3 = new TabPage("Vahekaart3");
-                tabs.TabPages.Add(tab1);
-                tabs.TabPages.Add(tab2);
-                tabs.TabPages.Add(tab3);
-                Controls.Add(tabs);
-                tree.SelectedNode = null;
+                tab3 = new TabPage("+");
+
+                // Otsingukast
+                TextBox otsing = new TextBox();
+                otsing.Location = new Point(20, 20);
+                otsing.Size = new Size(300, 25);
+
+                // Otsingu nupp
+                Button otsi = new Button();
+                otsi.Text = "Otsi";
+                otsi.Location = new Point(330, 20);
+                otsi.Size = new Size(70, 25);
+
+                // Veebibrauser
+                WebBrowser uusBrauser = new WebBrowser();
+                uusBrauser.Location = new Point(20, 60);
+                uusBrauser.Size = new Size(360, 200);
+                uusBrauser.ScriptErrorsSuppressed = true;
+
+                tab3.Controls.Add(otsing);
+                tab3.Controls.Add(otsi);
+                tab3.Controls.Add(uusBrauser);
+
+                // Otsi Google'ist
+                otsi.Click += (s, arg) =>
+                {
+                    string tekst = otsing.Text.Trim();
+
+                    if (string.IsNullOrWhiteSpace(tekst))
+                        return;
+
+                    string url;
+
+                    // Kui sisestatakse veebiaadress
+                    if (tekst.StartsWith("http://") || tekst.StartsWith("https://"))
+                    {
+                        url = tekst;
+                    }
+                    // Kui sisestatakse näiteks youtube.com
+                    else if (tekst.Contains("."))
+                    {
+                        url = "https://" + tekst;
+                    }
+                    // Muidu otsib Google'ist
+                    else
+                    {
+                        url = "https://www.google.com/search?q=" +
+                              Uri.EscapeDataString(tekst);
+                    }
+
+                    uusBrauser.Navigate(url);
+                };
             }
         }
 
